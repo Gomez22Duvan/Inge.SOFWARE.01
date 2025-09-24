@@ -5,6 +5,5 @@
 **/*.suo
 **/.vs/
 **/node_modules/
-**/wwwroot/lib/
 Dockerfile
 .dockerignore
