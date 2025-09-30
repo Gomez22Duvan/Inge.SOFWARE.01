@@ -1,0 +1,51 @@
+@page "/riego"
+@using System.Net.Http.Json
+
+<h3>🌱 Sistema de Riego Inteligente IoT</h3>
+
+<div class="card p-3 shadow rounded text-center" style="max-width:400px; margin:auto;">
+    <p><strong>Nivel de humedad:</strong> @nivelHumedad%</p>
+    <p><strong>Estado del riego:</strong> 
+        <span class="@GetEstadoColor()">@estadoRiego</span>
+    </p>
+    <p><strong>Hora:</strong> @hora</p>
+
+    <button class="btn btn-success mt-2" @onclick="SimularLectura">Simular nueva lectura</button>
+</div>
+
+@code {
+    private int nivelHumedad = 0;
+    private string estadoRiego = "OFF";
+    private string hora = "";
+
+    private async Task SimularLectura()
+    {
+        var random = new Random();
+        nivelHumedad = random.Next(10, 100);
+        estadoRiego = nivelHumedad < 40 ? "ON" : "OFF";
+        hora = DateTime.Now.ToString("HH:mm:ss");
+
+        // Enviar datos a Supabase
+        var supabaseUrl = "https://TU_PROYECTO.supabase.co/rest/v1/riego";
+        var supabaseKey = "TU_API_KEY";
+
+        var http = new HttpClient();
+        http.DefaultRequestHeaders.Add("apikey", supabaseKey);
+        http.DefaultRequestHeaders.Add("Authorization", $"Bearer {supabaseKey}");
+        http.DefaultRequestHeaders.Add("Prefer", "return=minimal");
+
+        var data = new
+        {
+            nivel_humedad = nivelHumedad,
+            estado_riego = estadoRiego,
+            hora = hora
+        };
+
+        await http.PostAsJsonAsync(supabaseUrl, data);
+    }
+
+    private string GetEstadoColor()
+    {
+        return estadoRiego == "ON" ? "text-success" : "text-danger";
+    }
+}

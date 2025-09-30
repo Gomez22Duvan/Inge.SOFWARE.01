@@ -1,8 +1,25 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+@inject Supabase.Client supabase
 
 <PageTitle>Home</PageTitle>
 
 <h1>Hello, Duvan y Paula!</h1>
+<button @onclick="Mostrar">mostrar</button>
+
+@foreach (var estudiante in estudiantes)
+{
+    @estudiante.Nombre
+}
 
 Welcome to your new app.
-      
+
+@code {
+    List<Estudiante> estudiantes = new List<Estudiante>();
+
+    private async Task Mostrar()
+    {
+        var result = await supabase.From<Estudiante>().Get();
+        estudiantes = result.Models;
+    }
+}

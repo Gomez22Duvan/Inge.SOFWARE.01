@@ -36,6 +36,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xIb21lLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/duvan/OneDrive/Documentos/Inge.SOFWARE.01/BlazorApp1/Components/Pages/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xOYXZNZW51LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/duvan/OneDrive/Documentos/Inge.SOFWARE.01/BlazorApp1/Components/Pages/Riego.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xSaWVnby5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/duvan/OneDrive/Documentos/Inge.SOFWARE.01/BlazorApp1/Components/Pages/Weather.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xXZWF0aGVyLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
