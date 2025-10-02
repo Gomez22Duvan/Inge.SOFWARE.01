@@ -1,51 +1,55 @@
 @page "/riego"
-@using System.Net.Http.Json
+@using System.Timers
 
-<h3>🌱 Sistema de Riego Inteligente IoT</h3>
+<h3>Panel de Riego IoT</h3>
 
-<div class="card p-3 shadow rounded text-center" style="max-width:400px; margin:auto;">
-    <p><strong>Nivel de humedad:</strong> @nivelHumedad%</p>
-    <p><strong>Estado del riego:</strong> 
-        <span class="@GetEstadoColor()">@estadoRiego</span>
-    </p>
-    <p><strong>Hora:</strong> @hora</p>
+<p>Estado: <b>@estado</b></p>
+<p>Tiempo en riego: @tiempoRiego</p>
 
-    <button class="btn btn-success mt-2" @onclick="SimularLectura">Simular nueva lectura</button>
-</div>
+<button @onclick="ToggleRiego">@botonTexto</button>
 
 @code {
-    private int nivelHumedad = 0;
-    private string estadoRiego = "OFF";
-    private string hora = "";
+    private string estado = "Apagado";
+    private string botonTexto = "Iniciar Riego";
+    private DateTime inicio;
+    private TimeSpan tiempoRiego;
+    private bool enRiego = false;
+    private System.Timers.Timer timer;
 
-    private async Task SimularLectura()
+    protected override void OnInitialized()
     {
-        var random = new Random();
-        nivelHumedad = random.Next(10, 100);
-        estadoRiego = nivelHumedad < 40 ? "ON" : "OFF";
-        hora = DateTime.Now.ToString("HH:mm:ss");
+        timer = new System.Timers.Timer(1000); // cada segundo
+        timer.Elapsed += ActualizarTiempo;
+    }
 
-        // Enviar datos a Supabase
-        var supabaseUrl = "https://TU_PROYECTO.supabase.co/rest/v1/riego";
-        var supabaseKey = "TU_API_KEY";
-
-        var http = new HttpClient();
-        http.DefaultRequestHeaders.Add("apikey", supabaseKey);
-        http.DefaultRequestHeaders.Add("Authorization", $"Bearer {supabaseKey}");
-        http.DefaultRequestHeaders.Add("Prefer", "return=minimal");
-
-        var data = new
+    private void ToggleRiego()
+    {
+        if (!enRiego)
         {
-            nivel_humedad = nivelHumedad,
-            estado_riego = estadoRiego,
-            hora = hora
-        };
+            estado = "Encendido";
+            botonTexto = "Suspender Riego";
+            inicio = DateTime.Now;
+            enRiego = true;
+            timer.Start();
+        }
+        else
+        {
+            estado = "Apagado";
+            botonTexto = "Iniciar Riego";
+            timer.Stop();
+            tiempoRiego = DateTime.Now - inicio;
+            enRiego = false;
 
-        await http.PostAsJsonAsync(supabaseUrl, data);
+            // Aquí iría la lógica para guardar en Supabase
+        }
     }
 
-    private string GetEstadoColor()
+    private void ActualizarTiempo(object sender, ElapsedEventArgs e)
     {
-        return estadoRiego == "ON" ? "text-success" : "text-danger";
-    }
+        if (enRiego)
+        {
+            tiempoRiego = DateTime.Now - inicio;
+            InvokeAsync(StateHasChanged);
+        }
+    }
 }
